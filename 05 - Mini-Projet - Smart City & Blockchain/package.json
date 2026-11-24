@@ -1,0 +1,14 @@
+{
+  "name": "smart-city-blockchain",
+  "version": "1.0.0",
+  "description": "Smart City Urban Issue Registry DApp",
+  "scripts": {
+    "compile": "node \"./node_modules/hardhat/internal/cli/cli.js\" compile",
+    "test": "node \"./node_modules/hardhat/internal/cli/cli.js\" test",
+    "node": "node \"./node_modules/hardhat/internal/cli/cli.js\" node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "hardhat": "^2.29.2"
+  }
+}

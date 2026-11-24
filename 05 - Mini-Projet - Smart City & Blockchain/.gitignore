@@ -1,0 +1,12 @@
+node_modules/
+dist/
+artifacts/
+cache/
+typechain-types/
+.env
+.env.local
+.vscode/
+~$*
+*.docx
+.DS_Store
+Thumbs.db
