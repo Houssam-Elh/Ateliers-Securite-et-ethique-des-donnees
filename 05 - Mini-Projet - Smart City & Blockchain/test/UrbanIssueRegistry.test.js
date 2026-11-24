@@ -52,9 +52,22 @@ describe("UrbanIssueRegistry", function () {
       expect(allIds).to.deep.equal([issueId]);
     });
 
-    it("should start as Assigned when a team is given at creation", async function () {
-      await registry.connect(citizen).createIssue(
-        "CITY-2026-PRE",
+    it("should reject citizen pre-assignment and allow municipality admin pre-assignment", async function () {
+      await expect(
+        registry.connect(citizen).createIssue(
+          "CITY-2026-CITIZEN-PRE",
+          "Water",
+          "Rue Hassan II",
+          "Leak",
+          "2026-11-20",
+          1,
+          "Citizen09",
+          "UrbanTeam05"
+        )
+      ).to.be.revertedWith("Only municipality admin can pre-assign an issue");
+
+      await registry.connect(owner).createIssue(
+        "CITY-2026-ADMIN-PRE",
         "Water",
         "Rue Hassan II",
         "Leak",
@@ -63,8 +76,27 @@ describe("UrbanIssueRegistry", function () {
         "Citizen09",
         "UrbanTeam05"
       );
-      const issue = await registry.getIssue("CITY-2026-PRE");
+      const issue = await registry.getIssue("CITY-2026-ADMIN-PRE");
       expect(issue.status).to.equal(1); // Assigned
+      expect(issue.assignedTo).to.equal("UrbanTeam05");
+    });
+
+    it("should reject setting Assigned status when no team is assigned", async function () {
+      const issueId = "CITY-2026-NO-TEAM";
+      await registry.connect(citizen).createIssue(
+        issueId,
+        "Water",
+        "Rue Hassan II",
+        "Leak",
+        "2026-11-20",
+        1,
+        "Citizen09",
+        ""
+      );
+
+      await expect(
+        registry.connect(owner).updateStatus(issueId, 1, "Assigning without a team")
+      ).to.be.revertedWith("Assign a team before setting Assigned status");
     });
 
     it("should prevent duplicate issue IDs", async function () {

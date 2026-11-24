@@ -117,8 +117,12 @@ contract UrbanIssueRegistry {
         require(bytes(_location).length > 0, "Location cannot be empty");
         require(bytes(_description).length > 0, "Description cannot be empty");
 
-        IssueStatus initialStatus = bytes(_assignedTo).length > 0 
-            ? IssueStatus.Assigned 
+        if (bytes(_assignedTo).length > 0) {
+            require(msg.sender == municipalityAdmin, "Only municipality admin can pre-assign an issue");
+        }
+
+        IssueStatus initialStatus = bytes(_assignedTo).length > 0
+            ? IssueStatus.Assigned
             : IssueStatus.Reported;
 
         UrbanIssue storage newIssue = issues[_issueId];
@@ -202,6 +206,9 @@ contract UrbanIssueRegistry {
     ) external onlyAdmin issueMustExist(_issueId) {
         UrbanIssue storage issue = issues[_issueId];
         require(issue.status != _newStatus, "Status is already set to this value");
+        if (_newStatus == IssueStatus.Assigned) {
+            require(bytes(issue.assignedTo).length > 0, "Assign a team before setting Assigned status");
+        }
 
         // Contrôle du workflow séquentiel : Reported -> Assigned -> InProgress -> Resolved -> Closed
         require(
