@@ -1,130 +1,188 @@
-# Mini-Projet : Smart City & Blockchain
-## Plateforme Décentralisée de Gestion des Services Urbains
+# Smart City & Blockchain
 
-[![Solidity](https://img.shields.io/badge/Solidity-^0.8.28-blue.svg)](https://soliditylang.org/)
-[![Hardhat](https://img.shields.io/badge/Hardhat-2.22-yellow.svg)](https://hardhat.org/)
-[![React](https://img.shields.io/badge/React-18-cyan.svg)](https://react.dev/)
-[![Ethers](https://img.shields.io/badge/Ethers.js-v6-purple.svg)](https://docs.ethers.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+## Plateforme décentralisée de gestion des signalements urbains
 
----
+**UrbanIssueRegistry** est une application décentralisée qui permet aux citoyens de signaler des problèmes dans l’espace public et à une municipalité d’en suivre le traitement. Le contrat intelligent conserve les signalements et leur historique sur une blockchain locale de développement.
 
-### 🎓 Informations Académiques
-- **Établissement :** Faculté des Sciences et Techniques de Tanger (FSTT) — Université Abdelmalek Essaâdi (UAE)
-- **Module :** M115 — Sécurité et Éthique des Données (Master 1 IDIA)
-- **Encadrante :** Mme. Ikram Benabdelouahab
-- **Année Universitaire :** 2026 – 2027
-
----
-
-## 📋 Présentation du Projet
-
-**UrbanIssueRegistry** est une application décentralisée (DApp) permettant la gestion transparente, collaborative et auditable du cycle de vie des incidents dans l'espace public (éclairage en panne, voirie et nids-de-poule, fuites d'eau, déchets, signalisation).
-
-Grâce à un Smart Contract développé en **Solidity (`UrbanIssueRegistry.sol`)**, chaque étape du traitement (déclaration citoyenne, affectation d'équipe municipale, intervention terrain, résolution et clôture) est enregistrée sur la blockchain Ethereum avec horodatage immuable et traçabilité de l'opérateur (`msg.sender`).
-
----
-
-## 🌟 Fonctionnalités Clés
-
-1. **Signalement Citoyen Direct :**
-   - Enregistrement immédiat sur la blockchain d'un dysfonctionnement avec localisation précise, catégorie et priorité (`Low`, `Medium`, `High`).
-   - Identifiant unique généré et contrôlé pour interdire les doublons.
-
-2. **Traçabilité Immuable (Audit Trail) :**
-   - Historique complet pour chaque incident, retraçant toutes les actions, commentaires d'intervention, équipes mobilisées, horodatages et adresses Ethereum associées.
-
-3. **Espace de Gestion Municipale :**
-   - Réservé aux comptes accrédités (`municipalityAdmin`).
-   - Affectation d'équipes techniques et transition des statuts conformément au workflow :
-     ```text
-     [Reported] ──▶ [Assigned] ──▶ [InProgress] ──▶ [Resolved] ──▶ [Closed]
-     ```
-
-4. **Importation Massive Excel (SheetJS) :**
-   - Module client de chargement du fichier standard `urban_issues.xlsx` ou CSV.
-   - Contrôle d'intégrité et validation préalable des colonnes requises avec sélection unitaire ou groupée avant enregistrement on-chain.
-
----
-
-## 📁 Structure du Répertoire
+Le parcours d’un signalement suit les statuts suivants :
 
 ```text
-05 - Mini-Projet - Smart City & Blockchain/
-├── contracts/
-│   └── UrbanIssueRegistry.sol      # Smart contract de registre urbain et traçabilité
-├── test/
-│   └── UrbanIssueRegistry.test.js  # Tests unitaires automatisés Hardhat
-├── scripts/
-│   └── deploy.js                   # Script de déploiement et configuration frontend
-├── frontend/                       # DApp React + Vite + Ethers v6
-│   ├── src/
-│   │   ├── App.jsx                 # Dashboard principal & KPI overview
-│   │   ├── Issues.jsx              # Registre public, recherche et audit trail
-│   │   ├── Manage.jsx              # Espace municipal d'affectation et suivi
-│   │   ├── Report.jsx              # Formulaire de signalement citoyen
-│   │   ├── Import.jsx              # Module d'importation Excel / CSV SheetJS
-│   │   ├── ui.jsx                  # Composants visuels, Stepper et Timeline
-│   │   ├── icons.jsx               # Collection d'icônes SVG
-│   │   └── config.js               # ABI, adresses et helpers de formatage
-│   ├── package.json
-│   └── vite.config.js
-├── hardhat.config.js               # Configuration du framework Hardhat
-├── urban_issues.xlsx               # Fichier modèle d'importation Excel
-└── README.md                       # Documentation officielle
+Reported → Assigned → InProgress → Resolved → Closed
 ```
 
----
+Un citoyen peut créer un signalement au statut `Reported`. Le compte administrateur municipal affecte une équipe et fait avancer le statut. Le registre et l’historique restent consultables publiquement dans l’application.
 
-## 🚀 Guide d'Installation & Démarrage
+## Fonctionnalités
 
-### Prérequis
-- [Node.js](https://nodejs.org/) (version 18 ou supérieure)
-- Extension de portefeuille [MetaMask](https://metamask.io/)
+- Création et consultation publique des signalements.
+- Identifiants uniques et prévention des doublons.
+- Affectation d’équipes et changements de statut réservés à l’administrateur municipal.
+- Historique horodaté des actions, avec commentaires et adresses des comptes qui les ont effectuées.
+- Import de fichiers Excel, XLS ou CSV avec aperçu, validation des lignes et sélection avant enregistrement.
+- Interface React connectée à MetaMask par ethers.js.
 
-### 1. Démarrer le Nœud Blockchain Local (Terminal 1)
-```bash
+## Technologies
+
+- Solidity et Hardhat pour le contrat et la blockchain locale.
+- React et Vite pour l’application web.
+- ethers.js pour les transactions et les lectures du contrat.
+- SheetJS pour lire les fichiers Excel et CSV dans le navigateur.
+
+## Prérequis
+
+- Node.js 18 ou supérieur et npm.
+- MetaMask installé dans le navigateur.
+- Les dépendances installées dans les dossiers racine et `frontend`.
+
+## Installation
+
+Ouvrir un terminal dans le dossier du mini-projet, puis installer les dépendances à la racine :
+
+```powershell
+npm ci
+```
+
+Installer ensuite les dépendances du frontend :
+
+```powershell
+Set-Location frontend
+npm ci
+Set-Location ..
+```
+
+## Démarrage local
+
+Le démarrage utilise trois terminaux PowerShell. Garder les deux premiers ouverts pendant toute l’utilisation de l’application.
+
+### 1. Démarrer la blockchain locale
+
+Dans le premier terminal, depuis le dossier racine du mini-projet :
+
+```powershell
 npm run node
 ```
-*Le simulateur Ethereum démarre sur `http://127.0.0.1:8545` (Chain ID : `31337`).*
 
-### 2. Déployer le Smart Contract (Terminal 2)
-```bash
+Hardhat démarre un nœud local à l’adresse RPC `http://127.0.0.1:8545` avec le Chain ID `31337`. Il affiche des comptes de test et leurs clés privées.
+
+### 2. Déployer le contrat
+
+Dans un deuxième terminal, ouvrir le même dossier racine et lancer :
+
+```powershell
 node ./node_modules/hardhat/internal/cli/cli.js run scripts/deploy.js --network localhost
 ```
-*Le script déploie `UrbanIssueRegistry` et met à jour automatiquement `frontend/.env.local`.*
 
-### 3. Lancer la DApp Frontend (Terminal 3)
-```bash
-cd frontend
+Le script affiche l’adresse du contrat déployé et l’écrit dans `frontend/.env.local`. Le fichier est utilisé par Vite pour connecter l’application à ce déploiement local.
+
+### 3. Démarrer le frontend
+
+Dans un troisième terminal :
+
+```powershell
+Set-Location frontend
 npm run dev
 ```
-Ouvrez votre navigateur sur **`http://localhost:5173`**.
 
----
+Ouvrir l’adresse locale affichée par Vite, généralement [http://localhost:5173](http://localhost:5173).
 
-## 🧪 Tests Unitaires Automatisés
+## Configuration de MetaMask
 
-Pour exécuter la suite de tests unitaires du Smart Contract (10 tests vérifiant création, contrôle d'accès `onlyAdmin`, intégrité du workflow séquentiel, événements et traçabilité) :
-```bash
+Ajouter le réseau local Hardhat dans MetaMask :
+
+| Paramètre | Valeur |
+|---|---|
+| Nom du réseau | Hardhat Localhost |
+| URL RPC | http://127.0.0.1:8545 |
+| Chain ID | 31337 |
+| Devise | ETH |
+
+Pour administrer le registre ou importer un fichier, utiliser le **compte de test n° 0** affiché par le nœud Hardhat. Importer dans MetaMask la clé privée de test correspondant à ce compte. Le contrat définit le compte qui le déploie comme administrateur municipal.
+
+Les comptes et clés affichés par Hardhat sont réservés au réseau local de test. Ne jamais utiliser ces clés pour un portefeuille réel ou un réseau public.
+
+## Essayer l’application
+
+### Signaler un problème
+
+1. Dans la DApp, ouvrir **Report Issue**.
+2. Connecter un portefeuille MetaMask au réseau Hardhat Localhost.
+3. Renseigner la catégorie, la localisation, la description et la priorité.
+4. Envoyer la transaction. Le nouveau signalement apparaît au statut `Reported`.
+
+### Gérer un signalement
+
+1. Connecter le compte administrateur municipal.
+2. Ouvrir **Municipality**, puis **Manage Issues**.
+3. Affecter une équipe à un signalement `Reported`.
+4. Faire avancer le signalement dans l’ordre des statuts et ajouter un commentaire aux changements.
+
+Les comptes autres que l’administrateur peuvent consulter la console en lecture seule. Ils ne peuvent pas affecter une équipe ou modifier un statut.
+
+### Importer un fichier
+
+1. Connecter le compte administrateur municipal.
+2. Ouvrir **Municipality**, puis **Batch Import (Excel/CSV)**.
+3. Charger un fichier `.xlsx`, `.xls` ou `.csv`.
+4. Vérifier l’aperçu et les erreurs signalées, puis sélectionner les lignes valides à enregistrer.
+5. Cliquer sur le bouton d’enregistrement et confirmer les transactions dans MetaMask.
+
+Le classeur de démonstration `urban_issues.xlsx` se trouve à la racine du projet. La première feuille doit contenir les colonnes suivantes :
+
+| Colonne | Règle |
+|---|---|
+| `issueId` | Obligatoire et unique |
+| `issueType` | Obligatoire |
+| `location` | Obligatoire |
+| `description` | Obligatoire |
+| `reportDate` | Obligatoire, date réelle au format `YYYY-MM-DD` |
+| `priority` | Obligatoire : `Low`, `Medium` ou `High` |
+| `reportedBy` | Facultatif |
+| `assignedTo` | Facultatif si le statut est `Reported`, obligatoire pour les autres statuts |
+| `status` | Facultatif. Si renseigné, doit être un statut reconnu et correspondre à l’équipe |
+
+Le module lit et valide les données dans le navigateur. Rien n’est envoyé sur la blockchain avant que l’utilisateur sélectionne les lignes et lance l’enregistrement. Si une transaction échoue après la création d’un signalement, réimporter la même ligne permet de reprendre les étapes de statut restantes lorsque les données correspondent au signalement déjà enregistré.
+
+## Compiler et exécuter les tests
+
+Depuis le dossier racine du projet :
+
+```powershell
+npm run compile
 npm test
 ```
-*Résultat attendu : `10 passing`.*
 
----
+La suite comprend 11 tests portant sur la création et la consultation des signalements, les droits de l’administrateur, l’affectation, le workflow et l’historique.
 
-## 📍 Contrat Déployé
-- **Adresse locale du Smart Contract :** `0x5FbDB2315678afecb367f032d93F642f64180aa3`
-- **Réseau :** Hardhat Localhost (`http://127.0.0.1:8545`)
-- **Chain ID :** `31337`
+## Réseau et adresse du contrat
 
----
+Le projet est configuré pour Hardhat Localhost, Chain ID `31337`. L’adresse est créée lors du déploiement local et enregistrée dans `frontend/.env.local`. Elle peut différer après un redémarrage du nœud.
 
-## 🦊 Configuration MetaMask
-- **Nom du réseau :** `Hardhat Localhost`
-- **RPC URL :** `http://127.0.0.1:8545`
-- **Chain ID :** `31337`
-- **Devise :** `ETH`
-- **Compte Administrateur Municipal :**
-  - Utiliser le **Compte #0** généré par votre nœud Hardhat local.
-  - Adresse publique correspondante : `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
+Le nœud Hardhat conserve les données uniquement pendant son exécution. Après son arrêt, les signalements sont effacés. Pour repartir d’un état propre, redémarrer le nœud, redéployer le contrat et redémarrer Vite afin qu’il recharge l’adresse du nouveau déploiement.
+
+## Dépannage
+
+- **L’application indique qu’aucune adresse de contrat n’est configurée** : démarrer le nœud, déployer le contrat, puis redémarrer Vite.
+- **Impossible de lire le contrat** : vérifier que le nœud Hardhat tourne toujours sur le port `8545` et que l’adresse dans `frontend/.env.local` correspond au déploiement courant.
+- **MetaMask affiche un mauvais réseau** : sélectionner Hardhat Localhost avec le Chain ID `31337`.
+- **Les actions municipales sont en lecture seule** : connecter dans MetaMask le compte de test n° 0 qui a déployé le contrat.
+- **La transaction échoue** : vérifier les messages de validation, le statut courant du signalement et les confirmations MetaMask.
+
+## Structure du projet
+
+```text
+contracts/UrbanIssueRegistry.sol       Contrat intelligent
+test/UrbanIssueRegistry.test.js        Tests Hardhat
+scripts/deploy.js                      Déploiement local et configuration frontend
+frontend/src/                          Application React
+urban_issues.xlsx                      Classeur de démonstration
+README.md                              Guide du projet
+```
+
+## Informations académiques
+
+- Établissement : Faculté des Sciences et Techniques de Tanger, Université Abdelmalek Essaâdi
+- Module : M115 — Sécurité et Éthique des Données
+- Formation : Master 1 IDIA
+- Encadrante : Prof. BENABDELOUAHAB Ikram
+- Année universitaire : 2026–2027
+- Étudiant : EL HAJIOUI Houssam
